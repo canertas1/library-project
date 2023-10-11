@@ -3,6 +3,7 @@ import library.demo.library.dto.BookDto;
 import library.demo.library.dto.BookUpdateDto;
 import library.demo.library.entity.Book;
 import library.demo.library.service.BookService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,13 +11,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/book")
+@RequiredArgsConstructor
 public class BookController {
 
    private final BookService bookService;
 
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
-    }
+
 
     @PostMapping("/save")
     public ResponseEntity<Book> saveBook(@RequestBody BookDto bookDto){

@@ -28,7 +28,8 @@ public class SecurityConfiguration {
               .authorizeHttpRequests(authorize -> authorize.requestMatchers("/auth/**")
 
 
-                      .permitAll().anyRequest().authenticated())
+                      .permitAll()
+                      .requestMatchers("/book/save").hasAnyAuthority("ADMIN").anyRequest().authenticated())
               .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
               .authenticationProvider(authenticationProvider)
               .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

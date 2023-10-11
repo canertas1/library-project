@@ -1,5 +1,4 @@
 package library.demo.library.service;
-
 import library.demo.library.dto.BookDto;
 import library.demo.library.dto.BookUpdateDto;
 import library.demo.library.entity.Book;
@@ -35,7 +34,7 @@ public class BookService {
 
     public void deleteBook(int bookId){
 
-       Optional<Book> book = bookRepository.findById(bookId);
+        Optional<Book> book = bookRepository.findById(bookId);
 
         if (book.isEmpty()){
 
