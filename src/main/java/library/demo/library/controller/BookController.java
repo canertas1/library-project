@@ -33,7 +33,6 @@ public class BookController {
 
 
 
-
     @GetMapping("/{id}")
     public  ResponseEntity<Book> getById( @PathVariable(value = "id") int id){
 

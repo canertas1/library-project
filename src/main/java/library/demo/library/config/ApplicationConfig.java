@@ -27,13 +27,6 @@ public class ApplicationConfig {
 
 
 
-
-
-
-
-
-
-
     @Bean
     public AuthenticationProvider authenticationProvider(){
 

@@ -20,14 +20,14 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthFilter;
    private final AuthenticationProvider authenticationProvider;
 
+
+
     @Bean
    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
 
         http.csrf(AbstractHttpConfigurer::disable)
               .authorizeHttpRequests(authorize -> authorize.requestMatchers("/auth/**")
-
-
                       .permitAll()
                       .requestMatchers("/book/save").hasAnyAuthority("ADMIN").anyRequest().authenticated())
               .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

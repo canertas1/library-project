@@ -6,6 +6,7 @@ import lombok.Data;
 
 public class AuthenticationRequest {
 
+    // not null kullan javax validation
     private String email;
     private String password;
 }

@@ -31,6 +31,13 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.authentication(request));
     }
 
+    @PostMapping("/confirmEmail")
+    public ResponseEntity<String> confirmEmail(String confirmationToken){
+
+        this.authenticationService.confirmMail(confirmationToken);
+        return ResponseEntity.ok("The mail confirmed");
+    }
+
 
 
 }

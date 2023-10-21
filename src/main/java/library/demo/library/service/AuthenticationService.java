@@ -3,10 +3,13 @@ import library.demo.library.config.JwtService;
 import library.demo.library.dto.AuthenticationRequest;
 import library.demo.library.dto.AuthenticationResponse;
 import library.demo.library.dto.RegisterRequest;
+import library.demo.library.entity.ConfirmationToken;
 import library.demo.library.entity.Role;
 import library.demo.library.entity.User;
+import library.demo.library.repository.ConfirmationRepository;
 import library.demo.library.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,29 +21,60 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
 
     private final UserRepository repository;
-
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final ConfirmationRepository confirmationRepository;
+    private final UserRepository userRepository;
+    private  final EmailService emailService;
+
 
 
     public AuthenticationResponse register(RegisterRequest registerRequest) {
-
-
 
         User user = new User();
         user.setEmail(registerRequest.getEmail());
         user.setRole(Role.USER);
         user.setName(registerRequest.getName());
+        user.setEnabled(false);
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         repository.save(user);
+
+
+        ConfirmationToken confirmationToken = new ConfirmationToken(user);
+        confirmationRepository.save(confirmationToken);
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setTo(user.getEmail());
+        simpleMailMessage.setSubject("Complete Registration");
+        simpleMailMessage.setText("To confirm your account, please click here :" +
+                " "+"http://localhost:8080/confirm-account?token="+confirmationToken.getConfirmationToken());
+        emailService.sendEmail(simpleMailMessage);
+
+
+
 
         String token = jwtService.generateToken(user);
         AuthenticationResponse auth = new AuthenticationResponse();
         auth.setToken(token);
         return auth;
+    }
+
+    public void confirmMail(String confirmationToken){
+
+        ConfirmationToken confirmation = confirmationRepository.findByConfirmationToken(confirmationToken);
+
+        if(confirmation != null){
+
+            User user = userRepository.findByEmail(confirmation.getUser().getEmail()).get();
+            user.setEnabled(true);
+            userRepository.save(user);
+        }else{
+
+            System.out.println("Couldn't verify email");
+        }
 
     }
+
 
     public AuthenticationResponse authentication(AuthenticationRequest request) {
 

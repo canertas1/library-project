@@ -2,7 +2,6 @@ package library.demo.library.repository;
 
 import library.demo.library.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Optional;
 
 
