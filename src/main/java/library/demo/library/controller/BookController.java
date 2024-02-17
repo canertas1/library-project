@@ -1,12 +1,18 @@
 package library.demo.library.controller;
 import library.demo.library.dto.BookDto;
+import library.demo.library.dto.BookStockDto;
 import library.demo.library.dto.BookUpdateDto;
 import library.demo.library.entity.Book;
 import library.demo.library.service.BookService;
+import library.demo.library.service.BookStockClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+
 import java.util.List;
 
 @RestController
@@ -15,9 +21,16 @@ import java.util.List;
 public class BookController {
 
    private final BookService bookService;
+   private final BookStockClientService bookStockClientService;
 
 
 
+
+
+    // event fırlatılacak ve karşı tarafta stockserviside o eventi  yakalasın ve ona göre olay gerçeklesin
+    // kafka çalışması
+    // cassandara rabbitmq  liqibase
+    // spring ile ilgili teknolojilere yüzeysel bilgiler
     @PostMapping("/save")
     public ResponseEntity<Book> saveBook(@RequestBody BookDto bookDto){
 
@@ -55,6 +68,8 @@ public class BookController {
 
 
     }
+
+
 
 
 

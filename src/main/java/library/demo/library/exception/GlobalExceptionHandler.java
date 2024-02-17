@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 public class GlobalExceptionHandler {
 
 
-    // bu hatayı tekrardan denenecek
+
     @ExceptionHandler(MalformedJwtException.class)
     ResponseEntity<String> malformedJwtException(MalformedJwtException exception){
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
@@ -20,11 +20,6 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(exception.getMessage(),HttpStatus.BAD_REQUEST);
     }
-
-
-
-
-
 
 
 

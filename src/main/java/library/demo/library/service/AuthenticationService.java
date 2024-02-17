@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import java.util.Calendar;
 import java.util.UUID;
 
+
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -31,7 +33,6 @@ public class AuthenticationService {
     private final ConfirmationRepository confirmationRepository;
     private final UserRepository userRepository;
     private  final EmailService emailService;
-
     private final PasswordResetTokenRepository passwordResetTokenRepository;
 
 
@@ -57,8 +58,6 @@ public class AuthenticationService {
         emailService.sendEmail(simpleMailMessage);
 
 
-
-
         String token = jwtService.generateToken(user);
         AuthenticationResponse auth = new AuthenticationResponse();
         auth.setToken(token);
@@ -68,7 +67,6 @@ public class AuthenticationService {
     public void confirmMail(String confirmationToken){
 
         ConfirmationToken confirmation = confirmationRepository.findByConfirmationToken(confirmationToken);
-
 
 
         if(confirmation != null){
@@ -136,7 +134,7 @@ public class AuthenticationService {
 
         final PasswordResetToken passToken = passwordResetTokenRepository.findByToken(token);
 
-         if(passToken != null && isTokenExpired(passToken)==false){
+         if(passToken != null && isTokenExpired(passToken)==true){
              return "access";
          }else {
              return null;
@@ -159,7 +157,6 @@ public class AuthenticationService {
         simpleMailMessage.setTo(email);
         simpleMailMessage.setSubject("Reset Password");
         emailService.sendEmail(simpleMailMessage);
-
     }
 
 

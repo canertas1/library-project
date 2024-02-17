@@ -18,7 +18,7 @@ public class Book {
     @Id
     private int id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "userId")
 
     private  User user;

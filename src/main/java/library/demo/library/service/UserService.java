@@ -6,6 +6,7 @@ import library.demo.library.entity.User;
 import library.demo.library.repository.BookRepository;
 import library.demo.library.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
@@ -16,6 +17,8 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final  BookRepository bookRepository;
+    private final KafkaTemplate kafkaTemplate;
+
 
 
 
@@ -33,17 +36,14 @@ public class UserService {
     }
 
     public User userTakeBook(BoughtBookDto boughtBookDto){
+
         Optional<User> userTemp = userRepository.findById(boughtBookDto.getUserId());
         Optional<Book> bookTemp = bookRepository.findById(boughtBookDto.getBookId());
         LocalDate date = LocalDate.now();
 
 
-        if (bookTemp.get().getTimeTaken() != null){
-            System.out.println("The book has taken ");
-            return  null;
-        }
-        if (userTemp.isEmpty())
-            return null;
+
+        kafkaTemplate.send("bookStock", bookTemp.get().getNameOfBook());
 
         Book bookGiven = new Book();
         bookGiven.setNameOfBook(bookTemp.get().getNameOfBook());
@@ -60,24 +60,15 @@ public class UserService {
     public User UserGiveBookToLibrary(int userId){
 
         Optional<User> user = userRepository.findById(userId);
+        Book book = user.get().getBook();
 
+        kafkaTemplate.send("bookStock1", book.getNameOfBook());
 
-        if (!user.isPresent())
-        {
-            System.out.println("The userId is incorrect");
-            return null;
-        }
+        book.setUser(null);
+        book.setTimeGiven(null);
+        book.setTimeTaken(null);
+        bookRepository.save(book);
 
-        List<Book> books = bookRepository.findAllByUserId(userId);
-
-
-        for(Book book:books){
-            book.setUser(null);
-            book.setTimeGiven(null);
-            book.setTimeTaken(null);
-
-            bookRepository.save(book);
-        }
         return user.get();
     }
 
@@ -86,12 +77,7 @@ public class UserService {
     public List<User> getAllUser(Optional<Integer> userId){
 
 
-
-        if (userId.isPresent()){
-
-            return  userRepository.findById(userId.get()).stream().toList();
-        }else
-            return userRepository.findAll();
+        return userId.map(integer -> userRepository.findById(integer).stream().toList()).orElseGet(userRepository::findAll);
 
     }
 

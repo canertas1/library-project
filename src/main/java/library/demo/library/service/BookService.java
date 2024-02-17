@@ -14,10 +14,6 @@ public class BookService {
 
     private final BookRepository bookRepository ;
 
-
-
-
-
     public Book save(BookDto bookDto){
 
         Optional<Book> book1 = bookRepository.findById(bookDto.getId());
@@ -38,7 +34,7 @@ public class BookService {
 
         if (book.isEmpty()){
 
-            System.out.println("there is no book with  given the bookId");
+
             throw new RuntimeException("there is no book with given the bookId");
 
         }else {
@@ -75,6 +71,11 @@ public class BookService {
         return bookRepository.save(book.get());
 
     }
+
+    // bookstockclient service yazılıp bunun içinde book stock u ile ilgili bütün servis cağgıları burada toplanır
+    // url i yaml dan okunacak ve client bir bean olacak
+    //
+
 
 
 
